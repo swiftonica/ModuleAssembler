@@ -17,21 +17,21 @@ public extension Initable {
 }
 
 public protocol AssemblableView: Initable {
-    associatedtype EventOutputType
-    var eventOutput: EventOutputType { get set }
+    associatedtype EventOutputReturnType
+    var eventOutput: ((EventOutputReturnType) -> Void)? { get set }
 }
 
 public protocol AssemblablePresenter: Initable {
-    associatedtype EventOutputHandlerType
+    associatedtype EventOutputReturnType
     associatedtype ViewInterfaceContractType
     
-    var eventOutputHandler: EventOutputHandlerType { get }
+    var eventOutputHandler: ((EventOutputReturnType) -> Void) { get }
     var interfaceContract: ViewInterfaceContractType! { get set }
 }
 
 public extension AssemblablePresenter {
-    var eventOutputHandler: EventOutputHandlerType? {
-        return self as? EventOutputHandlerType
+    var eventOutputHandler: ((EventOutputReturnType) -> Void) {
+        return { _ in }
     }
 }
 
@@ -57,7 +57,7 @@ public extension Assemblable {
     > {
         var view = self.view
         var presenter = self.presenter
-        if let eventOutput = presenter.eventOutputHandler as? ViewType.EventOutputType {
+        if let eventOutput = presenter.eventOutputHandler as? (ViewType.EventOutputReturnType) -> Void {
             view.eventOutput = eventOutput
         }
         if let interfaceContract = view as? PresenterType.ViewInterfaceContractType {
