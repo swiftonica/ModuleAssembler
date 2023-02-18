@@ -23,7 +23,10 @@ public protocol AssemblableView: Initable {
 
 public protocol AssemblablePresenter: Initable {
     associatedtype EventOutputHandlerType
+    associatedtype ViewInterfaceContractType
+    
     var eventOutputHandler: EventOutputHandlerType { get }
+    var interfaceContract: ViewInterfaceContractType { get set }
 }
 
 public extension AssemblablePresenter {
@@ -53,9 +56,12 @@ public extension Assemblable {
         ViewType, PresenterType, PublicInterfaceType
     > {
         var view = self.view
-        let presenter = self.presenter
+        var presenter = self.presenter
         if let eventOutput = presenter.eventOutputHandler as? ViewType.EventOutputType {
             view.eventOutput = eventOutput
+        }
+        if let interfaceContract = view as? PresenterType.ViewInterfaceContractType {
+            presenter.interfaceContract = interfaceContract
         }
         return Module(
             view: view,
