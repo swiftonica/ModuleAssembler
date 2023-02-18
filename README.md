@@ -1,3 +1,2 @@
 # ModuleAssembler
-
-A description of this package.
+MVP Module Assembler. No reactive programming. No VIPER
