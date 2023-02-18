@@ -26,7 +26,7 @@ public protocol AssemblablePresenter: Initable {
     associatedtype ViewInterfaceContractType
     
     var eventOutputHandler: EventOutputHandlerType { get }
-    var interfaceContract: ViewInterfaceContractType { get set }
+    var interfaceContract: ViewInterfaceContractType! { get set }
 }
 
 public extension AssemblablePresenter {
