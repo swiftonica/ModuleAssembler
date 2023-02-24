@@ -106,4 +106,6 @@ public struct Module<ViewType, PresenterType, PublicInterfaceType> {
     public let view: ViewType
     public let presenter: PresenterType
     public let publicInterface: PublicInterfaceType?
+    
+    public typealias void = Module<Any, Any, Any>.Type
 }
