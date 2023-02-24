@@ -37,7 +37,7 @@ public extension AssemblablePresenter {
     }
 }
 
-public protocol Assemblable {
+public protocol Assemblable: AnyObject {
     associatedtype ViewType: AssemblableView
     associatedtype PresenterType: AssemblablePresenter
     associatedtype PublicInterfaceType
@@ -51,24 +51,29 @@ public protocol Assemblable {
     var view: ViewType { get }
     var presenter: PresenterType { get }
     var publicInterface: PublicInterfaceType? { get }
+    
+    var currentView: ViewType! { get set }
+    var currentPresenter: PresenterType! { get set }
 }
 
 public extension Assemblable {
     var module: Module<
         ViewType, PresenterType, PublicInterfaceType
     > {
-        var view = self.view
-        var presenter = self.presenter
-        if let eventOutput = presenter.eventOutputHandler as? (ViewType.EventOutputReturnType) -> Void {
-            view.eventOutput = eventOutput
+        var _view = self.view
+        var _presenter = self.presenter
+        self.currentView = _view
+        self.currentPresenter = _presenter
+        if let eventOutput = _presenter.eventOutputHandler as? (ViewType.EventOutputReturnType) -> Void {
+            _view.eventOutput = eventOutput
         }
-        if let interfaceContract = view as? PresenterType.ViewInterfaceContractType {
-            presenter.interfaceContract = interfaceContract
+        if let interfaceContract = _view as? PresenterType.ViewInterfaceContractType {
+            _presenter.interfaceContract = interfaceContract
         }
         presenter.start()
         return Module(
-            view: view,
-            presenter: presenter,
+            view: _view,
+            presenter: _presenter,
             publicInterface: self.publicInterface
         )
     }
@@ -93,7 +98,8 @@ public class Assembler<
     PresenterType: AssemblablePresenter,
     PublicInterfaceType
 >: Assemblable {
-    
+    public var currentView: ViewType!
+    public var currentPresenter: PresenterType!
 }
 
 public struct Module<ViewType, PresenterType, PublicInterfaceType> {
