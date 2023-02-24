@@ -70,7 +70,7 @@ public extension Assemblable {
         if let interfaceContract = _view as? PresenterType.ViewInterfaceContractType {
             _presenter.interfaceContract = interfaceContract
         }
-        presenter.start()
+        _presenter.start()
         return Module(
             view: _view,
             presenter: _presenter,
