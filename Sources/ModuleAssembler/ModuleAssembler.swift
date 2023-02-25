@@ -115,46 +115,14 @@ public struct Module<ViewType, PresenterType: AnyObject, PublicInterfaceType>: E
     public let publicInterface: PublicInterfaceType?
 }
 
-public protocol StringModuleKeeper: AnyObject {
-    var modules: [String: Any] { get set }
-    
-    func keepModule(_ module: Any)
-    func removeModule(_ module: Any)
-}
+public struct ModuleKeeper<ModulesEnumType: Hashable> {
+    private(set) var modules: [ModulesEnumType: Any] = [:]
 
-public extension StringModuleKeeper {
-    var modules: [String: Any] {
-        return [:]
-    }
-    
-    func keepModule(_ module: Any, forKey: String) {
+    mutating func keepModule(_ module: Any, forKey: ModulesEnumType) {
         modules[forKey] = module
     }
     
-    func removeModule(forKey: String) {
+    mutating func removeModule(_ module: Any, forKey: ModulesEnumType) {
         modules[forKey] = nil
     }
 }
-
-public protocol ModuleKeeper: AnyObject {
-    associatedtype ModulesEnumType: Hashable
-    var modules: [ModulesEnumType: Any] { get set }
-    
-    func keepModule(_ module: Any)
-    func removeModule(_ module: Any)
-}
-
-public extension ModuleKeeper {
-    var modules: [ModulesEnumType: Any] {
-        return [:]
-    }
-    
-    func keepModule(_ module: Any, forKey: ModulesEnumType) {
-        modules[forKey] = module
-    }
-    
-    func removeModule(forKey: ModulesEnumType) {
-        modules[forKey] = nil
-    }
-}
-
