@@ -22,7 +22,7 @@ public protocol AssemblableView: Initable {
     var eventOutput: ((EventOutputReturnType) -> Void)? { get set }
 }
 
-public protocol AssemblablePresenter: Initable {
+public protocol AssemblablePresenter: Initable, AnyObject {
     associatedtype ViewType: AssemblableView
     
     var eventOutputHandler: ((ViewType.EventOutputReturnType) -> Void) { get }
@@ -61,7 +61,7 @@ public extension Assemblable {
         ViewType, PresenterType, PublicInterfaceType
     > {
         var _view = self.view
-        var _presenter = self.presenter
+        let _presenter = self.presenter
         self.currentView = _view
         self.currentPresenter = _presenter
         if let eventOutput = _presenter.eventOutputHandler as? (ViewType.EventOutputReturnType) -> Void {
@@ -102,10 +102,59 @@ public class Assembler<
     public var currentPresenter: PresenterType!
 }
 
-public struct Module<ViewType, PresenterType, PublicInterfaceType> {
+public struct Module<ViewType, PresenterType: AnyObject, PublicInterfaceType>: Equatable {
+    public static func == (
+        lhs: Module<ViewType, PresenterType, PublicInterfaceType>,
+        rhs: Module<ViewType, PresenterType, PublicInterfaceType>
+    ) -> Bool {
+        return lhs.presenter === rhs.presenter
+    }
+    
     public let view: ViewType
     public let presenter: PresenterType
     public let publicInterface: PublicInterfaceType?
-    
-    public typealias void = Module<Any, Any, Any>.Type
 }
+
+public protocol StringModuleKeeper: AnyObject {
+    var modules: [String: Any] { get set }
+    
+    func keepModule(_ module: Any)
+    func removeModule(_ module: Any)
+}
+
+public extension StringModuleKeeper {
+    var modules: [String: Any] {
+        return [:]
+    }
+    
+    func keepModule(_ module: Any, forKey: String) {
+        modules[forKey] = module
+    }
+    
+    func removeModule(forKey: String) {
+        modules[forKey] = nil
+    }
+}
+
+public protocol ModuleKeeper: AnyObject {
+    associatedtype ModulesEnumType: Hashable
+    var modules: [ModulesEnumType: Any] { get set }
+    
+    func keepModule(_ module: Any)
+    func removeModule(_ module: Any)
+}
+
+public extension ModuleKeeper {
+    var modules: [ModulesEnumType: Any] {
+        return [:]
+    }
+    
+    func keepModule(_ module: Any, forKey: ModulesEnumType) {
+        modules[forKey] = module
+    }
+    
+    func removeModule(forKey: ModulesEnumType) {
+        modules[forKey] = nil
+    }
+}
+
