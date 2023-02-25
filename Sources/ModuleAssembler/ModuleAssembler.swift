@@ -116,13 +116,13 @@ public struct Module<ViewType, PresenterType: AnyObject, PublicInterfaceType>: E
 }
 
 public struct ModuleKeeper<ModulesEnumType: Hashable> {
-    private(set) var modules: [ModulesEnumType: Any] = [:]
+    private(set) public var modules: [ModulesEnumType: Any] = [:]
 
-    mutating func keepModule(_ module: Any, forKey: ModulesEnumType) {
+    public mutating func keepModule(_ module: Any, forKey: ModulesEnumType) {
         modules[forKey] = module
     }
     
-    mutating func removeModule(_ module: Any, forKey: ModulesEnumType) {
+    public mutating func removeModule(_ module: Any, forKey: ModulesEnumType) {
         modules[forKey] = nil
     }
 }
