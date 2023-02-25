@@ -117,6 +117,7 @@ public struct Module<ViewType, PresenterType: AnyObject, PublicInterfaceType>: E
 
 public struct ModuleKeeper<ModulesEnumType: Hashable> {
     private(set) public var modules: [ModulesEnumType: Any] = [:]
+    public init() {}
 
     public mutating func keepModule(_ module: Any, forKey: ModulesEnumType) {
         modules[forKey] = module
