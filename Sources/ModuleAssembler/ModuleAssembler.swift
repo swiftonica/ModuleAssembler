@@ -113,6 +113,12 @@ public struct Module<ViewType, PresenterType: AnyObject, PublicInterfaceType>: E
     public let view: ViewType
     public let presenter: PresenterType
     public let publicInterface: PublicInterfaceType?
+    
+    public init(view: ViewType, presenter: PresenterType, publicInterface: PublicInterfaceType?) {
+        self.view = view
+        self.presenter = presenter
+        self.publicInterface = publicInterface
+    }
 }
 
 public struct ModuleKeeper<ModulesEnumType: Hashable> {
