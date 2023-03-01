@@ -17,22 +17,22 @@ public extension Initable {
 }
 
 public protocol AssemblableView: Initable {
-    associatedtype EventOutputReturnType
+    associatedtype EventOutputType
     associatedtype InterfaceContractType
-    var eventOutput: ((EventOutputReturnType) -> Void)? { get set }
+    var eventOutput: ((EventOutputType) -> Void)? { get set }
 }
 
 public protocol AssemblablePresenter: Initable, AnyObject {
     associatedtype ViewType: AssemblableView
     
-    var eventOutputHandler: ((ViewType.EventOutputReturnType) -> Void) { get }
+    var eventOutputHandler: ((ViewType.EventOutputType) -> Void) { get }
     var interfaceContract: ViewType.InterfaceContractType! { get set }
     
     func start()
 }
 
 public extension AssemblablePresenter {
-    var eventOutputHandler: ((ViewType.EventOutputReturnType) -> Void) {
+    var eventOutputHandler: ((ViewType.EventOutputType) -> Void) {
         return { _ in }
     }
 }
@@ -64,7 +64,7 @@ public extension Assemblable {
         let _presenter = self.presenter
         self.currentView = _view
         self.currentPresenter = _presenter
-        if let eventOutput = _presenter.eventOutputHandler as? (ViewType.EventOutputReturnType) -> Void {
+        if let eventOutput = _presenter.eventOutputHandler as? (ViewType.EventOutputType) -> Void {
             _view.eventOutput = eventOutput
         }
         if let interfaceContract = _view as? PresenterType.ViewType.InterfaceContractType {
